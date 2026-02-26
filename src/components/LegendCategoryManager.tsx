@@ -1,40 +1,18 @@
 import { useState } from 'react'
+import { Trash } from 'lucide-react'
+import { useLoggeryStore } from '../store/useLoggeryStore'
 
-export type Category = {
-  id: string
-  label: string
-  color: string // Tailwind color class or hex
-}
-
-export interface LegendCategoryManagerProps {
-  categories: Category[]
-  setCategories: (cats: Category[]) => void
-}
-
-export function LegendCategoryManager({
-  categories,
-  setCategories,
-}: LegendCategoryManagerProps) {
+export function LegendCategoryManager() {
   const [newLabel, setNewLabel] = useState('')
   const [newColor, setNewColor] = useState('#22c55e') // default green
+  const categories = useLoggeryStore((state) => state.categories)
+  const addCategory = useLoggeryStore((state) => state.addCategory)
+  const updateCategory = useLoggeryStore((state) => state.updateCategory)
+  const deleteCategory = useLoggeryStore((state) => state.deleteCategory)
 
-  function addCategory() {
-    if (!newLabel.trim()) return
-    setCategories([
-      ...categories,
-      { id: Date.now().toString(), label: newLabel, color: newColor },
-    ])
+  function handleAddCategory() {
+    addCategory(newLabel, newColor)
     setNewLabel('')
-  }
-
-  function updateCategory(id: string, label: string, color: string) {
-    setCategories(
-      categories.map((cat) => (cat.id === id ? { ...cat, label, color } : cat)),
-    )
-  }
-
-  function deleteCategory(id: string) {
-    setCategories(categories.filter((cat) => cat.id !== id))
   }
 
   return (
@@ -54,7 +32,7 @@ export function LegendCategoryManager({
           className="w-6 h-6 p-0 border-none"
         />
         <button
-          onClick={addCategory}
+          onClick={handleAddCategory}
           className="bg-cyan-600 text-white px-2 py-1 rounded text-xs"
         >
           Add
@@ -83,7 +61,7 @@ export function LegendCategoryManager({
               onClick={() => deleteCategory(cat.id)}
               className="text-xs text-red-500 hover:underline"
             >
-              Delete
+              <Trash />
             </button>
           </li>
         ))}

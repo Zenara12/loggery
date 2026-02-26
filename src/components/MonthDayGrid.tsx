@@ -1,33 +1,43 @@
-const MONTHS = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
+import { useLoggeryStore } from '../store/useLoggeryStore'
+
+const MONTHS_DAYS = [
+  {
+    month: 'Jan',
+    days: 31,
+  },
+  {
+    month: 'Feb',
+    days: 29,
+  },
+  {
+    month: 'Mar',
+    days: 31,
+  },
+  {
+    month: 'Apr',
+    days: 30,
+  },
+  {
+    month: 'May',
+    days: 31,
+  },
+  { month: 'Jun', days: 30 },
+  { month: 'Jul', days: 31 },
+  { month: 'Aug', days: 31 },
+  { month: 'Sep', days: 30 },
+  { month: 'Oct', days: 31 },
+  { month: 'Nov', days: 30 },
+  { month: 'Dec', days: 31 },
 ]
 
-// data: { [monthIndex: number]: { [day: number]: number } }
-// colorScale: array of color classes, e.g. ['bg-gray-200', 'bg-green-200', ...]
-export function MonthDayGrid({
-  categoryMap = {},
-  categories = [],
-  onCellClick,
-  selectedCat,
-  defaultColor = 'bg-gray-200',
-}: {
-  categoryMap?: { [monthIndex: number]: { [day: number]: string } }
-  categories?: { id: string; label: string; color: string }[]
-  onCellClick?: (monthIdx: number, day: number, hasCategory: boolean) => void
-  selectedCat?: string
-  defaultColor?: string
-}) {
+const MAX_DAYS = Math.max(...MONTHS_DAYS.map((m) => m.days))
+
+export function MonthDayGrid({ defaultColor = 'bg-gray-200' }: { defaultColor?: string }) {
+  const categoryMap = useLoggeryStore((state) => state.categoryMap)
+  const categories = useLoggeryStore((state) => state.categories)
+  const selectedCat = useLoggeryStore((state) => state.selectedCat)
+  const toggleCell = useLoggeryStore((state) => state.toggleCell)
+
   // Helper to get color for a category id
   const getStyle = (catId?: string) => {
     if (!catId) return { background: undefined }
@@ -40,34 +50,33 @@ export function MonthDayGrid({
         <thead>
           <tr>
             <th className="w-4 h-4 p-0 m-0"></th>
-            {MONTHS.map((m) => (
+            {MONTHS_DAYS.map((m, monthIdx) => (
               <th
-                key={m}
+                key={monthIdx}
                 className="text-[10px] font-semibold px-0.5 py-0 text-center w-4 h-4"
               >
-                {m[0]}
+                {m.month[0]}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {Array.from({ length: 31 }, (_, dayIdx) => (
+          {Array.from({ length: MAX_DAYS }, (_, dayIdx) => (
             <tr key={dayIdx}>
               <td className="text-[10px] text-right pr-0 align-middle w-4 h-4 p-0 m-0">
                 {dayIdx + 1}
               </td>
-              {MONTHS.map((_, monthIdx) => {
+              {MONTHS_DAYS.map((monthData, monthIdx) => {
+                if (dayIdx + 1 > monthData.days) {
+                  return <td key={monthIdx} className="p-0.5" />
+                }
                 const catId = categoryMap[monthIdx]?.[dayIdx + 1]
                 return (
                   <td
                     key={monthIdx}
                     className={`p-0.5`}
-                    title={`Day ${dayIdx + 1}, ${MONTHS[monthIdx]}${catId ? `: ${catId}` : ''}`}
-                    onClick={
-                      onCellClick
-                        ? () => onCellClick(monthIdx, dayIdx + 1, !!catId)
-                        : undefined
-                    }
+                    title={`Day ${dayIdx + 1}, ${monthData.month}${catId ? `: ${catId}` : ''}`}
+                    onClick={() => toggleCell(monthIdx, dayIdx + 1)}
                   >
                     <div
                       className={`w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 rounded border border-transparent hover:border-gray-400 transition-colors p-0 m-0 ${!catId ? defaultColor : ''} ${selectedCat && catId === selectedCat ? 'ring-2 ring-cyan-400' : ''}`}
