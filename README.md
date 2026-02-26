@@ -17,6 +17,18 @@ To build this application for production:
 pnpm build
 ```
 
+## Deploying To GitHub Pages
+
+Use the deploy script:
+
+```bash
+pnpm deploy
+```
+
+Notes:
+- GitHub Pages base path is derived from `package.json` name (currently `loggery` => `/loggery/`).
+- If your repository name is different, update the `base` logic in `vite.config.ts`.
+
 ## Testing
 
 This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:

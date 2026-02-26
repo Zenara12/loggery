@@ -14,7 +14,7 @@ function App() {
   const setSelectedCat = useLoggeryStore((state) => state.setSelectedCat)
 
   return (
-    <div className="text-center flex flex-col items-center gap-2">
+    <div className="text-center flex flex-col items-center gap-2 mx-4">
       <h2 className="text-2xl font-bold mb-4">Month Day Grid Example</h2>
       <div className="flex flex-row gap-2 w-full justify-center">
         <div>

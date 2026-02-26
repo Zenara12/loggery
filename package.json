@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "vite --port 3000",
     "build": "vite build && tsc",
+    "build:gh-pages": "vite build --mode ghpages && tsc && node scripts/prepare-gh-pages.mjs",
     "preview": "vite preview",
+    "preview:gh-pages": "vite preview --mode ghpages",
+    "deploy": "pnpm run build:gh-pages && gh-pages -d dist",
     "test": "vitest run",
     "lint": "eslint",
     "format": "prettier",
@@ -31,6 +34,7 @@
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.0.4",
     "autoprefixer": "^10.4.23",
+    "gh-pages": "^6.3.0",
     "jsdom": "^27.0.0",
     "postcss": "^8.5.6",
     "prettier": "^3.5.3",
