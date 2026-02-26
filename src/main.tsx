@@ -1,3 +1,4 @@
+import { setupDeviceTypeClassInjection } from './config/deviceType'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
@@ -24,6 +25,9 @@ declare module '@tanstack/react-router' {
     router: typeof router
   }
 }
+
+// Inject device type class into root element
+setupDeviceTypeClassInjection()
 
 // Render the app
 const rootElement = document.getElementById('app')
